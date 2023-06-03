@@ -5,7 +5,7 @@ const {
   validatePassword,
   signInValidator,
 } = require("../middleware/validator");
-const { isValidpassResetToken } = require("../middleware/user");
+const { isValidPassResetToken } = require("../middleware/user");
 const {
   sendResetPasswordTokenStatus,
   resetPassword,
@@ -25,18 +25,31 @@ router.post("/verify-email", verification);
 router.post("/resend-email-verification", resendEmail);
 router.post("/forget-password", forgetPassword);
 router.post(
-  "/verify-password",
-  isValidpassResetToken,
+  "/verify-pass-reset-token",
+  isValidPassResetToken,
   sendResetPasswordTokenStatus
 );
 router.post(
   "/reset-password",
   validatePassword,
   validate,
-  isValidpassResetToken,
+  isValidPassResetToken,
   resetPassword
 );
+const { isAuth } = require("../middleware/auth");
 
-router.post("/signin", signInValidator, signIn);
+router.post("/signin", signInValidator, validate, signIn);
+
+router.get("/is-auth", isAuth, (req, res) => {
+  const { user } = req;
+  res.json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isVerified: user.isVerified,
+    },
+  });
+});
 
 module.exports = router;
