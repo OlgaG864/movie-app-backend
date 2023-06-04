@@ -7,12 +7,14 @@ require("dotenv").config();
 const { handleNotFound } = require("./utils/helpers");
 
 const userRouter = require("./routes/users");
+const actorRouter = require("./routes/actor");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/user", userRouter);
+app.use("/actor", actorRouter);
 app.use("/*", handleNotFound);
 
 app.use(errorHandler);
