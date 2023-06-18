@@ -1,6 +1,5 @@
 const User = require("../models/users");
-const EmailVerification = require("../models/emailVerification");
-
+const EmailVerificationToken = require("../models/emailVerificationToken");
 const { isValidObjectId } = require("mongoose");
 const { json } = require("express");
 const { generateOTP, generateTransport } = require("../utils/mail");
@@ -23,7 +22,7 @@ exports.create = async (req, res) => {
   let OTP = generateOTP();
 
   // store otp inside our db
-  const newEmailVerificationToken = new EmailVerification({
+  const newEmailVerificationToken = new EmailVerificationToken({
     owner: newUser._id,
     token: OTP,
   });
@@ -63,7 +62,7 @@ exports.verification = async (req, res) => {
 
   if (user.isVerified) return sendError(res, "user is already verified!");
 
-  const token = await EmailVerification.findOne({ owner: userId });
+  const token = await EmailVerificationToken.findOne({ owner: userId });
   if (!token) return sendError(res, "token not found!");
 
   const isMatched = await token.compareToken(OTP);
@@ -72,7 +71,7 @@ exports.verification = async (req, res) => {
   user.isVerified = true;
   await user.save();
 
-  await EmailVerification.findByIdAndDelete(token._id);
+  await EmailVerificationToken.findByIdAndDelete(token._id);
 
   var transport = generateTransport();
 
@@ -85,7 +84,14 @@ exports.verification = async (req, res) => {
 
   const jwtToken = jwt.sign({ userId: user._id }, config.JWT_SECRET);
   res.json({
-    user: { id: user._id, name: user.name, email: user.email, token: jwtToken },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: jwtToken,
+      isVerified: user.isVerified,
+      role: user.role,
+    },
     message: "Your email is verified.",
   });
 };
@@ -99,7 +105,7 @@ exports.resendEmail = async (req, res) => {
   if (user.isVerified)
     return sendError(res, "This email id is already verified!");
 
-  const alreadyHasToken = await EmailVerification.findOne({
+  const alreadyHasToken = await EmailVerificationToken.findOne({
     owner: userId,
   });
   if (alreadyHasToken)
@@ -112,7 +118,7 @@ exports.resendEmail = async (req, res) => {
   let OTP = generateOTP();
 
   // store otp inside our db
-  const newEmailVerificationToken = new EmailVerification({
+  const newEmailVerificationToken = new EmailVerificationToken({
     owner: user._id,
     token: OTP,
   });
@@ -215,18 +221,20 @@ exports.resetPassword = async (req, res) => {
   });
 };
 
-exports.signIn = async (req, res, next) => {
+exports.signIn = async (req, res) => {
   const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return sendError(err, "user not found");
 
-    const matched = await user.comparePassword(password);
-    if (!matched) return sendError(err, "password not matched");
-    const { _id, name, role, isVerified } = user;
-    const jwtToken = jwt.sign({ userId: _id }, config.JWT_SECRET);
-    res.json({ user: { _id, name, email, role, token: jwtToken, isVerified } });
-  } catch (error) {
-    sendError(res, error.message);
-  }
+  const user = await User.findOne({ email });
+  if (!user) return sendError(res, "Email/Password mismatch!");
+
+  const matched = await user.comparePassword(password);
+  if (!matched) return sendError(res, "Email/Password mismatch!");
+
+  const { _id, name, role, isVerified } = user;
+
+  const jwtToken = jwt.sign({ userId: _id }, config.JWT_SECRET);
+
+  res.json({
+    user: { id: _id, name, email, role, token: jwtToken, isVerified },
+  });
 };

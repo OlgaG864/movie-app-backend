@@ -207,8 +207,6 @@ exports.updateMovieWithPoster = async (req, res) => {
     movie.writers = writers;
   }
 
-  // update poster
-  // removing poster from cloud if there is any.
   const posterID = movie.poster?.public_id;
   if (posterID) {
     const { result } = await cloudinary.uploader.destroy(posterID);
@@ -216,7 +214,6 @@ exports.updateMovieWithPoster = async (req, res) => {
       return sendError(res, "Could not update poster at the moment!");
     }
 
-    // uploading poster
     const {
       secure_url: url,
       public_id,
@@ -259,9 +256,6 @@ exports.removeMovie = async (req, res) => {
   const movie = await Movie.findById(movieId);
   if (!movie) return sendError(res, "Movie Not Found!", 404);
 
-  // check if there is poster or not.
-  // if yes then we need to remove that.
-
   const posterId = movie.poster?.public_id;
   if (posterId) {
     const { result } = await cloudinary.uploader.destroy(posterId);
@@ -269,7 +263,6 @@ exports.removeMovie = async (req, res) => {
       return sendError(res, "Could not remove poster from cloud!");
   }
 
-  // removing trailer
   const trailerId = movie.trailer?.public_id;
   if (!trailerId) return sendError(res, "Could not find trailer in the cloud!");
   const { result } = await cloudinary.uploader.destroy(trailerId, {

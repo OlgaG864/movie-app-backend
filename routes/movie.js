@@ -33,7 +33,7 @@ router.patch(
   "/update-movie-without-poster/:movieId",
   isAuth,
   isAdmin,
-  // parseData,
+  parseData,
   validateMovie,
   validate,
   updateMovieWithoutPoster
