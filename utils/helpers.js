@@ -22,7 +22,7 @@ exports.handleNotFound = (req, res) => {
 exports.uploadImageToCloud = async (file) => {
   const { secure_url: url, public_id } = await cloudinary.uploader.upload(
     file,
-    { gravity: "face", height: 500, width: 500, crop: "thumb" }
+    { gravity: "face", height: 300, width: 300, crop: "thumb" }
   );
 
   return { url, public_id };

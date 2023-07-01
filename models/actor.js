@@ -27,4 +27,5 @@ const actorSchema = mongoose.Schema(
 );
 
 actorSchema.index({ name: "text" });
+
 module.exports = mongoose.model("Actor", actorSchema);
