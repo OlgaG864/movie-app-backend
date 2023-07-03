@@ -80,11 +80,14 @@ exports.removeActor = async (req, res) => {
 };
 
 exports.searchActor = async (req, res) => {
-  const { query } = req;
-  const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+  const { name } = req.query;
+  // const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+  if (!name.trim()) return sendError(res, "Invalid request!");
+  const result = await Actor.find({
+    name: { $regex: name, $options: "i" },
+  });
 
   const actors = result.map((actor) => formatActor(actor));
-
   res.json({ results: actors });
 };
 

@@ -3,9 +3,11 @@ const {
   uploadTrailer,
   createMovie,
   updateMovieWithoutPoster,
-  updateMovieWithPoster,
+  updateMovie,
   removeMovie,
   getMovies,
+  getMovieForUpdate,
+  searchMovies,
 } = require("../controllers/movie");
 const { isAuth, isAdmin } = require("../middleware/auth");
 const { uploadVideo, uploadImage } = require("../middleware/multer");
@@ -30,25 +32,27 @@ router.post(
   validate,
   createMovie
 );
+// router.patch(
+//   "/update-movie-without-poster/:movieId",
+//   isAuth,
+//   isAdmin,
+//   // parseData,
+//   validateMovie,
+//   validate,
+//   updateMovieWithoutPoster
+// );
 router.patch(
-  "/update-movie-without-poster/:movieId",
-  isAuth,
-  isAdmin,
-  parseData,
-  validateMovie,
-  validate,
-  updateMovieWithoutPoster
-);
-router.patch(
-  "/update-movie-with-poster/:movieId",
+  "/update/:movieId",
   isAuth,
   isAdmin,
   uploadImage.single("poster"),
   parseData,
-  validateMovie,
-  validate,
-  updateMovieWithPoster
+  //validateMovie,
+  //validate,
+  updateMovie
 );
 router.delete("/:movieId", isAuth, isAdmin, removeMovie);
 router.get("/movies", isAuth, isAdmin, getMovies);
+router.get("/for-update/:movieId", isAuth, isAdmin, getMovieForUpdate);
+router.get("/search", isAuth, isAdmin, searchMovies);
 module.exports = router;
