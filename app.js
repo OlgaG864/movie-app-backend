@@ -18,8 +18,8 @@ app.use(morgan("dev"));
 app.use("/user", userRouter);
 app.use("/actor", actorRouter);
 app.use("/movie", movieRouter);
-app.use("/*", handleNotFound);
 app.use("/review", reviewRouter);
+app.use("/*", handleNotFound);
 
 app.use(errorHandler);
 
