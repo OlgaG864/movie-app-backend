@@ -14,6 +14,7 @@ Project is created with:
 - React Js 18
 - Node Js
 - Mongo DB
+  -Tailwind css
 
 ## Setup
 
