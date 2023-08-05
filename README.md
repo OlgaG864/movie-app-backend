@@ -22,7 +22,9 @@ To run this project, install it locally using npm:
 run npm i for the front and backend
 to run the server: server:\*; & npm start
 to runt the front end :npm start
+use mailtrap to verify your account
 
 ```
+mongodb+srv://goncherenkoola:Trebutsa098%@cluster0.wzwc3bl.mongodb.net/movieApp
 
 ```
