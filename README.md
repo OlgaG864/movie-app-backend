@@ -20,7 +20,7 @@ Project is created with:
 
 To run this project, install it locally using npm:
 run npm i for the front and backend
-to run the server: server:\*; & npm start
+to run the server: npm start
 to runt the front end :npm start
 use mailtrap to verify your account
 
