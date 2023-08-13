@@ -25,6 +25,6 @@ to runt the front end :npm start
 use mailtrap to verify your account
 
 ```
-mongodb+srv://goncherenkoola:Trebutsa098%@cluster0.wzwc3bl.mongodb.net/movieApp
+mongodb+srv://goncherenkoola:Trebutsa098@cluster0.wzwc3bl.mongodb.net/movieApp
 
 ```
